@@ -1,8 +1,12 @@
-﻿namespace InvoiceGeneratorApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace InvoiceGeneratorApp.Models
 {
     public class Invoice
     {
-        public int Id { get; set; } // For DB storage later
+        [Key]
+        public int Id { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerAddress { get; set; } = string.Empty;
@@ -12,12 +16,10 @@
 
         public List<InvoiceItem> Items { get; set; } = new();
 
-        // Computed properties
-        public decimal SubTotal => Items.Sum(i => i.Total);
-        public decimal Tax => SubTotal * 0.1m; // 10% tax for now
-        public decimal Total => SubTotal + Tax;
+        [NotMapped] public decimal SubTotal => Items.Sum(i => i.Total);
+        [NotMapped] public decimal Tax => SubTotal * 0.1m;
+        [NotMapped] public decimal Total => SubTotal + Tax;
 
-        // Random Invoice Number generator (can be moved to a helper later)
         public static string GenerateInvoiceNumber()
         {
             return $"INV-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString().Substring(0, 6)}";

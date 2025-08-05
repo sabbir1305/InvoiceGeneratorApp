@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using InvoiceGeneratorApp.Models;
+using InvoiceGeneratorApp.Services;
 using System.Collections.ObjectModel;
 
 namespace InvoiceGeneratorApp.ViewModels
 {
     public partial class InvoiceViewModel : ObservableObject
     {
+        private readonly DatabaseService _databaseService;
         // Current Invoice
         [ObservableProperty]
         private Invoice currentInvoice;
@@ -19,16 +21,15 @@ namespace InvoiceGeneratorApp.ViewModels
         // Collection for binding to UI
         public ObservableCollection<InvoiceItem> Items { get; } = new();
 
-        public InvoiceViewModel()
+        public InvoiceViewModel(DatabaseService databaseService)
         {
-            // Initialize new invoice
-            currentInvoice = new Invoice
+            _databaseService = databaseService;
+            CurrentInvoice = new Invoice
             {
                 InvoiceNumber = Invoice.GenerateInvoiceNumber(),
                 Date = DateTime.Now
             };
         }
-
         [RelayCommand]
         private void AddItem()
         {
@@ -70,6 +71,17 @@ namespace InvoiceGeneratorApp.ViewModels
             };
 
             Items.Clear();
+        }
+
+        [RelayCommand]
+        private async Task SaveInvoiceAsync()
+        {
+            if (CurrentInvoice.Items.Count == 0) return;
+
+            await _databaseService.SaveInvoiceAsync(CurrentInvoice);
+
+            // Reset after saving
+            GenerateNewInvoice();
         }
     }
 }

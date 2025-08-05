@@ -78,8 +78,8 @@
             <VerticalStackLayout Spacing="10">
                 <HorizontalStackLayout Spacing="15">
                     <Button Text="New Invoice" Command="{Binding GenerateNewInvoiceCommand}" />
-                    <Button Text="Save" IsEnabled="False" />
-                    <!-- Enable after DB integration -->
+                    <Button Text="Save" Command="{Binding SaveInvoiceCommand}" />
+
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout Spacing="15">

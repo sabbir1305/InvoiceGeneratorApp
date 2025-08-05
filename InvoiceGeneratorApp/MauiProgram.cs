@@ -20,7 +20,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ViewModels.InvoiceListViewModel>();
 
         // Register Services (later for PDF & DB)
-        builder.Services.AddSingleton<Services.PdfService>();
+        //builder.Services.AddSingleton<Services.PdfService>();
         builder.Services.AddSingleton<Services.DatabaseService>();
 
         return builder.Build();
