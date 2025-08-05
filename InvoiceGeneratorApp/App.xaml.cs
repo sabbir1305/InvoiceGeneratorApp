@@ -1,15 +1,14 @@
-﻿namespace InvoiceGeneratorApp
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+﻿using InvoiceGeneratorApp.Views;
+using InvoiceGeneratorApp.ViewModels;
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+namespace InvoiceGeneratorApp;
+
+public partial class App : Application
+{
+    public App(InvoiceViewModel invoiceViewModel)
+    {
+        InitializeComponent();
+
+        MainPage = new NavigationPage(new InvoicePage(invoiceViewModel));
     }
 }
