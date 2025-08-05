@@ -9,7 +9,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Header with Invoice Number -->
+            <!-- Header -->
             <VerticalStackLayout HorizontalOptions="Center" Spacing="5">
                 <Label Text="Invoice Generator" FontSize="28" FontAttributes="Bold" />
                 <Label Text="{Binding CurrentInvoice.InvoiceNumber, StringFormat='Invoice No: {0}'}"
@@ -31,7 +31,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Add Item Section -->
+            <!-- Add Item -->
             <Frame BorderColor="LightGray" Padding="15" CornerRadius="10" HasShadow="True">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="Add Item" FontAttributes="Bold" FontSize="20" />
@@ -54,7 +54,7 @@
                                     <Label Grid.Column="1" Text="{Binding Quantity}" HorizontalOptions="End" />
                                     <Label Grid.Column="2" Text="{Binding Price, StringFormat='{}{0:C}'}" HorizontalOptions="End" />
                                     <Button Grid.Column="3" Text="X" BackgroundColor="Red" TextColor="White"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:InvoiceViewModel}}, Path=RemoveItemCommand}"
+                                          Command="{Binding Path=BindingContext.RemoveItemCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                                             CommandParameter="{Binding .}" />
                                 </Grid>
                             </DataTemplate>
@@ -79,14 +79,11 @@
                 <HorizontalStackLayout Spacing="15">
                     <Button Text="New Invoice" Command="{Binding GenerateNewInvoiceCommand}" />
                     <Button Text="Save" Command="{Binding SaveInvoiceCommand}" />
-
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout Spacing="15">
                     <Button Text="Export to PDF" IsEnabled="False" />
-                    <!-- Enable after PDF step -->
                     <Button Text="Print" IsEnabled="False" />
-                    <!-- Enable after Print step -->
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 

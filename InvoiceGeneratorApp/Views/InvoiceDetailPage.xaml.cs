@@ -1,31 +1,41 @@
-using InvoiceGeneratorApp.Models;
+﻿using InvoiceGeneratorApp.Models;
 using InvoiceGeneratorApp.Services;
 
 namespace InvoiceGeneratorApp.Views;
 
+[QueryProperty(nameof(SelectedInvoice), "SelectedInvoice")]
 public partial class InvoiceDetailPage : ContentPage
 {
-    private readonly Invoice _invoice;
-    private readonly PdfService _pdfService;
-    private readonly PrintService _printService;
-
+    private PdfService _pdfService;
+    private PrintService _printService;
     private string? _pdfFilePath;
 
+    private Invoice _selectedInvoice;
 
-    public InvoiceDetailPage(Invoice selectedInvoice, PdfService pdfService, PrintService printService)
+    public Invoice SelectedInvoice
+    {
+        get => _selectedInvoice;
+        set
+        {
+            _selectedInvoice = value;
+            BindingContext = _selectedInvoice;
+        }
+    }
+
+    public InvoiceDetailPage()
     {
         InitializeComponent();
-        _invoice = selectedInvoice;
-        BindingContext = _invoice;
-        _pdfService = pdfService;
-        _printService = printService;
+
+        // Resolve services from global ServiceProvider
+        _pdfService = MauiProgram.Services.GetRequiredService<PdfService>();
+        _printService = MauiProgram.Services.GetRequiredService<PrintService>();
     }
 
     private async void OnExportPdfClicked(object sender, EventArgs e)
     {
         try
         {
-            _pdfFilePath = await _pdfService.GenerateInvoicePdfAsync(_invoice);
+            _pdfFilePath = await _pdfService.GenerateInvoicePdfAsync(SelectedInvoice);
             await DisplayAlert("PDF Exported", $"Invoice PDF saved at:\n{_pdfFilePath}", "OK");
         }
         catch (Exception ex)

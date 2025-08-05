@@ -30,6 +30,7 @@ namespace InvoiceGeneratorApp.ViewModels
                 Date = DateTime.Now
             };
         }
+
         [RelayCommand]
         private void AddItem()
         {
@@ -46,11 +47,13 @@ namespace InvoiceGeneratorApp.ViewModels
             Items.Add(newItem);
             CurrentInvoice.Items.Add(newItem);
 
-            // Clear input fields
+            OnPropertyChanged(nameof(CurrentInvoice)); // ✅ Refresh totals
+
             ItemDescription = string.Empty;
             ItemQuantity = 0;
             ItemPrice = 0;
         }
+
 
         [RelayCommand]
         private void RemoveItem(InvoiceItem item)
@@ -59,6 +62,8 @@ namespace InvoiceGeneratorApp.ViewModels
 
             Items.Remove(item);
             CurrentInvoice.Items.Remove(item);
+
+            OnPropertyChanged(nameof(CurrentInvoice)); // ✅ Refresh totals
         }
 
         [RelayCommand]
@@ -74,7 +79,7 @@ namespace InvoiceGeneratorApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task SaveInvoiceAsync()
+        private async Task SaveInvoice()
         {
             if (CurrentInvoice.Items.Count == 0) return;
 

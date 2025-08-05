@@ -1,33 +1,39 @@
 ﻿using InvoiceGeneratorApp.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoiceGeneratorApp.Services
+namespace InvoiceGeneratorApp.Services;
+public class DatabaseService
 {
-    public class DatabaseService
+    private readonly AppDbContext _context;
+
+    public DatabaseService()
     {
-        private readonly AppDbContext _context;
+        _context = new AppDbContext();
+        _context.Database.EnsureCreated();
+    }
 
-        public DatabaseService()
-        {
-            _context = new AppDbContext();
-            _context.Database.EnsureCreated();
-        }
-
-        public async Task SaveInvoiceAsync(Invoice invoice)
+    public async Task SaveInvoiceAsync(Invoice invoice)
+    {
+        if (invoice.Id == 0)
         {
             _context.Invoices.Add(invoice);
-            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            _context.Invoices.Update(invoice);
         }
 
-        public async Task<List<Invoice>> GetInvoicesAsync()
-        {
-            return await _context.Invoices.Include(i => i.Items).ToListAsync();
-        }
+        await _context.SaveChangesAsync();
+    }
 
-        public async Task DeleteInvoiceAsync(Invoice invoice)
-        {
-            _context.Invoices.Remove(invoice);
-            await _context.SaveChangesAsync();
-        }
+    public async Task<List<Invoice>> GetInvoicesAsync()
+    {
+        return await _context.Invoices.Include(i => i.Items).ToListAsync();
+    }
+
+    public async Task DeleteInvoiceAsync(Invoice invoice)
+    {
+        _context.Invoices.Remove(invoice);
+        await _context.SaveChangesAsync();
     }
 }

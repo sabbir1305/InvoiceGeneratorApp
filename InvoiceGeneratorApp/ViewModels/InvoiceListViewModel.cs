@@ -11,36 +11,65 @@ namespace InvoiceGeneratorApp.ViewModels
     {
         private readonly DatabaseService _databaseService;
 
+        [ObservableProperty]
+        private bool isBusy;
+
         public ObservableCollection<Invoice> Invoices { get; } = new();
 
         public InvoiceListViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
+            LoadInvoicesCommand.Execute(null);
         }
 
         [RelayCommand]
         public async Task LoadInvoicesAsync()
         {
-            Invoices.Clear();
-            var invoices = await _databaseService.GetInvoicesAsync();
-            foreach (var invoice in invoices)
-                Invoices.Add(invoice);
+            if (IsBusy) return;
+            IsBusy = true;
+
+            try
+            {
+                Invoices.Clear();
+                var invoices = await _databaseService.GetInvoicesAsync();
+                foreach (var invoice in invoices)
+                {
+                    Invoices.Add(invoice);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
+        [RelayCommand]
+        public async Task ViewDetailsAsync(Invoice invoice)
+        {
+            if (invoice == null) return;
+
+            var detailPage = new InvoiceDetailPage
+            {
+                SelectedInvoice = invoice
+            };
+
+            await Application.Current.MainPage.Navigation.PushAsync(detailPage);
+        }
+
 
         [RelayCommand]
         public async Task DeleteInvoiceAsync(Invoice invoice)
         {
             if (invoice == null) return;
+
+            var confirm = await Shell.Current.DisplayAlert("Delete", "Are you sure?", "Yes", "No");
+            if (!confirm) return;
+
             await _databaseService.DeleteInvoiceAsync(invoice);
             Invoices.Remove(invoice);
         }
-
-        [RelayCommand]
-        private async Task OpenInvoiceDetailAsync(Invoice invoice)
-        {
-            if (invoice == null) return;
-            await Application.Current.MainPage.Navigation.PushAsync(new InvoiceDetailPage(invoice,new PdfService(), new PrintService()));
-        }
-
     }
 }
