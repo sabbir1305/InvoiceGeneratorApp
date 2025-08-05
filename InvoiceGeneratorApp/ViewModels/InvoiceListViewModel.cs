@@ -39,7 +39,7 @@ namespace InvoiceGeneratorApp.ViewModels
         private async Task OpenInvoiceDetailAsync(Invoice invoice)
         {
             if (invoice == null) return;
-            await Application.Current.MainPage.Navigation.PushAsync(new InvoiceDetailPage(invoice));
+            await Application.Current.MainPage.Navigation.PushAsync(new InvoiceDetailPage(invoice,new PdfService(), new PrintService()));
         }
 
     }

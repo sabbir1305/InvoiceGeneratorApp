@@ -58,9 +58,10 @@
 
             <!-- Action Buttons -->
             <HorizontalStackLayout Spacing="15">
-                <Button Text="Export to PDF" IsEnabled="False" />
-                <Button Text="Print" IsEnabled="False" />
+                <Button Text="Export to PDF" Clicked="OnExportPdfClicked" />
+                <Button Text="Print" Clicked="OnPrintClicked" />
             </HorizontalStackLayout>
+
 
         </VerticalStackLayout>
     </ScrollView>
