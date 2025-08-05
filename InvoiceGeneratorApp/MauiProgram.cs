@@ -1,25 +1,28 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace InvoiceGeneratorApp
+namespace InvoiceGeneratorApp;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+        // Register ViewModels
+        builder.Services.AddSingleton<ViewModels.InvoiceViewModel>();
+        builder.Services.AddSingleton<ViewModels.InvoiceListViewModel>();
 
-            return builder.Build();
-        }
+        // Register Services (later for PDF & DB)
+        builder.Services.AddSingleton<Services.PdfService>();
+        builder.Services.AddSingleton<Services.DatabaseService>();
+
+        return builder.Build();
     }
 }
