@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:InvoiceGeneratorApp.Models"
+             x:Class="InvoiceGeneratorApp.Views.InvoiceDetailPage"
+             x:DataType="models:Invoice"
+             Title="Invoice Details">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Invoice Header -->
+            <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+                <Label Text="Invoice Details" FontSize="28" FontAttributes="Bold" />
+                <Label Text="{Binding InvoiceNumber}" FontSize="18" TextColor="Gray" />
+                <Label Text="{Binding Date, StringFormat='Date: {0:dd-MM-yyyy}'}" FontSize="16" />
+            </VerticalStackLayout>
+
+            <!-- Customer Info -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Customer Information" FontAttributes="Bold" FontSize="20" />
+                    <Label Text="{Binding CustomerName}" />
+                    <Label Text="{Binding CustomerAddress}" />
+                    <Label Text="{Binding CustomerEmail}" />
+                    <Label Text="{Binding CustomerPhone}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Items List -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout>
+                    <Label Text="Items" FontAttributes="Bold" FontSize="20" />
+                    <CollectionView ItemsSource="{Binding Items}" HeightRequest="200">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="2*,Auto,Auto" Padding="5">
+                                    <Label Grid.Column="0" Text="{Binding Description}" LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="1" Text="{Binding Quantity}" HorizontalOptions="End" />
+                                    <Label Grid.Column="2" Text="{Binding Price, StringFormat='{}{0:C}'}" HorizontalOptions="End" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Totals -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout>
+                    <Label Text="Totals" FontAttributes="Bold" FontSize="20" />
+                    <Label Text="{Binding SubTotal, StringFormat='Subtotal: {0:C}'}" />
+                    <Label Text="{Binding Tax, StringFormat='Tax: {0:C}'}" />
+                    <Label Text="{Binding Total, StringFormat='Total: {0:C}'}"
+                           FontAttributes="Bold" FontSize="18" TextColor="Green" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <HorizontalStackLayout Spacing="15">
+                <Button Text="Export to PDF" IsEnabled="False" />
+                <Button Text="Print" IsEnabled="False" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
